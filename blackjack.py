@@ -82,10 +82,10 @@ while game:
     card_view(players[0])
     # main player actions
     while True:
-        if players[0].card_sum == 21:
+        if players[0].card_sum() == 21:
             print 'You have 21'
             break
-        elif players[0].card_sum > 21:
+        elif players[0].card_sum() > 21:
             print 'You have too much'
             break
         next_action = raw_input('You action? (more/stop) ')
@@ -112,15 +112,21 @@ while game:
         if final != 'Yes':
             print 'Incorrect command'
             continue
+        else:
+            break
     for player in players:
+        print player.name, '-'
         card_view(player)
         if player.card_sum() <= 21:
             winners.append([player.name, player.card_sum()])
     players = []
     winners.sort(key=lambda a: a[1])
-    print winners[-1][0], 'win!'
-    if winners[-1][0] != 'You':
-        print 'You lose'
+    if len(winners) > 0:
+        print winners[-1][0], 'win!'
+        if winners[-1][0] != 'You':
+            print 'You lose'
+    else:
+        print 'All loses'
     final_choice = raw_input('Play again? (Yes/No)')
     if final_choice == 'Yes':
         continue
