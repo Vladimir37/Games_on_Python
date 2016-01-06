@@ -76,6 +76,54 @@ while game:
     players.append(Player('You'))
     for num in range(players_num - 1):
         players.append(Player(players_name[num]))
+    # card distribution
     for player in players:
         card_transfer(player, 2)
     card_view(players[0])
+    # main player actions
+    while True:
+        if players[0].card_sum == 21:
+            print 'You have 21'
+            break
+        elif players[0].card_sum > 21:
+            print 'You have too much'
+            break
+        next_action = raw_input('You action? (more/stop) ')
+        if next_action == 'more':
+            card_transfer(players[0], 1)
+            card_view(players[0])
+            continue
+        elif next_action == 'stop':
+            break
+        else:
+            print 'Incorrect command'
+            continue
+    # other player actions
+    for player_num in range(1, len(players)):
+        while True:
+            if players[player_num].decision():
+                card_transfer(players[player_num], 1)
+                continue
+            break
+    # winners
+    while True:
+        winners = []
+        final = raw_input('All ready. Open cards? (Yes) ')
+        if final != 'Yes':
+            print 'Incorrect command'
+            continue
+    for player in players:
+        card_view(player)
+        if player.card_sum() <= 21:
+            winners.append([player.name, player.card_sum()])
+    players = []
+    winners.sort(key=lambda a: a[1])
+    print winners[-1][0], 'win!'
+    if winners[-1][0] != 'You':
+        print 'You lose'
+    final_choice = raw_input('Play again? (Yes/No)')
+    if final_choice == 'Yes':
+        continue
+    else:
+        print 'Bue'
+        game = False
