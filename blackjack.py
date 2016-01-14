@@ -46,7 +46,8 @@ for suit in suits:
 # card transfer
 def card_transfer(player, num):
     for n in range(num):
-        card_num = randint(0, len(all_cards) - 1)
+        max_card = len(all_cards) - 2
+        card_num = randint(0, max_card)
         player.adding_card(all_cards[card_num])
         del all_cards[card_num]
 
@@ -69,10 +70,15 @@ while True:
 
 # playing
 while game:
-    players_num = int(raw_input('Enter gamers num (min - 2, max: 10): '))
-    if type(players_num) != int or players_num > 10 or players_num < 2:
+    players_num = raw_input('Enter gamers num (min - 2, max: 10): ')
+    try:
+        players_num = int(players_num)
+    except:
         print 'Incorrect value'
         continue
+    if players_num > 10 or players_num < 2:
+            print 'Incorrect value'
+            continue
     players.append(Player('You'))
     for num in range(players_num - 1):
         players.append(Player(players_name[num]))
