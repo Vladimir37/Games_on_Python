@@ -38,11 +38,6 @@ class Card(object):
         self.face = face[0]
         self.price = face[1]
 
-# card generation
-for suit in suits:
-    for face in faces:
-        all_cards.append(Card(suit, face))
-
 # card transfer
 def card_transfer(player, num):
     for n in range(num):
@@ -70,6 +65,11 @@ while True:
 
 # playing
 while game:
+    # card generation
+    for suit in suits:
+        for face in faces:
+            all_cards.append(Card(suit, face))
+    # start playing
     players_num = raw_input('Enter gamers num (min - 2, max: 10): ')
     try:
         players_num = int(players_num)
@@ -133,6 +133,7 @@ while game:
             print 'You lose'
     else:
         print 'All loses'
+    all_cards = []
     final_choice = raw_input('Play again? (Yes/No)')
     if final_choice == 'Yes':
         continue
