@@ -22,6 +22,17 @@ def fixed_graded_scale(current, max):
         'max': max
     }
 
+def random_with_zero(num):
+    if num > 0:
+        one = 0
+        two = num
+    elif num < 0:
+        one = num
+        two = 0
+    else:
+        return 0
+    return randint(one, two)
+
 # name generation
 def select_name():
     number = randint(0, len(names) - 1)
@@ -54,8 +65,50 @@ class Human(object):
             'offence': 0,
             'relation': {}
         }
-    def choise(self):
-        actual = []
+
+    # human make a choice and get bonus/penalty
+    def choice(self):
+        actual = {}
+        actual['comfort'] = ((self.changing['comfort']['max'] - self.changing['comfort']['current']) *
+                          (self.character['consumerism'] / 2) / ((self.character['melancholy'] / 2) + 1))
+        actual['communication'] = ((self.changing['communication']['max'] - self.changing['communication']['current']) *
+                                (self.character['sociality'] / 2) / ((self.character['melancholy'] / 2) + 1))
+        complaints = []
+        desires = []
+        for elem in actual:
+            if actual[elem] > 30:
+                complaints.append(elem)
+                print '%s suffers from a lack of %s' % (self.name, elem)
+                self.changing['tranquility']['current'] -= randint(1, 8)
+            elif 30 > actual[elem] > 15:
+                desires.append(elem)
+                print '%s wants to %s' % (self.name, elem)
+                self.changing['tranquility']['current'] -= randint(0, 4)
+            else:
+                self.changing['tranquility']['current'] += randint(0, 3)
+        return actual
+
+    # select other human for dialog
+    def select_human(self):
+        if not len(self.changing['relation']):
+            while True:
+                new_human_num = randint(0, len(all_humans) - 1)
+                if all_humans[new_human_num].name == self.name:
+                    continue
+                else:
+                    break
+            relation_result = 0
+            selected = all_humans[new_human_num]
+            social_max = max(self.character['sociality'], selected.character['sociality'])
+            social_min = min(self.character['sociality'], selected.character['sociality'])
+            social_difference = randint(0, social_max - social_min)
+            consumer_max = max(self.character['consumerism'], selected.character['consumerism'])
+            consumer_min = min(self.character['consumerism'], selected.character['consumerism'])
+            consumer_difference = randint(0, consumer_max - consumer_min)
+
+    # talk with other humans
+    def talk(self):
+        # human has no friends
 
 
 # number question
@@ -78,6 +131,5 @@ all_humans = []
 for num in range(human_num):
     all_humans.append(Human(select_name()))
 
-print all_humans[0].personal
-print all_humans[0].character
-print all_humans[0].changing
+for human in all_humans:
+    human.choice()
